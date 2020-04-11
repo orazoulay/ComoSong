@@ -13,7 +13,7 @@ dotenv.config();
 //
 //Import Routes
 const authRoute = require('./api/routes/auth');
-const postRoute = require('./api/routes/posts');
+const songRoute = require('./api/routes/song');
 
 
 
@@ -33,7 +33,7 @@ app.use(express.json());
 
 //Routes MiddleWares
 app.use('/api', authRoute);
-app.use('/api/posts', postRoute);
+app.use('/api', songRoute);
 //
 //
 //
