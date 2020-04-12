@@ -32,13 +32,17 @@ exports.users = sequelize.define('users', {
     },
     password: {
         type: DataTypes.STRING,
-        set(value) {
-            this.setDataValue('password', hash(value));
-        }
+        // set(value) {
+        //     this.setDataValue('password', hash(value));
+        // }
     },
     name: {
         type: DataTypes.STRING
+    },
+    file: {
+        type: DataTypes.STRING
     }
+
 },{
     timestamps: false
 });

@@ -1,8 +1,6 @@
 const app = require('./app');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const formidable = require('formidable');
-const fs = require('fs');
 const sequalize = require('./db/sequalize');
 var ffmpeg = require('fluent-ffmpeg');
 const formidable = require('formidable');
@@ -13,9 +11,10 @@ const port = process.env.PORT || 3001;
 
 function addFileToDb(filePath){
    const values = {
-        userId: 'BarTheKing3',
-        password: '1234567654rew2',
-        name: filePath
+        userId: '1',
+        password: '1234',
+        name: 'or',
+        file: filePath
     }; // You need to add the file as value here
     sequalize.users.findOne({ where: {
         userId: values.userId,
@@ -52,8 +51,8 @@ app.use((req, res, next) => {
         console.log(req.url);
         const form = new formidable.IncomingForm();
         form.parse(req, function (err, fields, files) {
-            const oldpath = files.filetoupload.path;
-            const newpath = './resources/' + files.filetoupload.name+".mp4";
+            const oldpath = files.filename.path;
+            const newpath = './resources/' + files.filename.name+".mp4";
             fs.rename(oldpath, newpath, function (err) {
                 if (err) throw err;
                 res.write('File uploaded and moved!');
@@ -63,10 +62,10 @@ app.use((req, res, next) => {
         });
     } else {
         res.writeHead(200, {'Content-Type': 'text/html'});
-        res.write('<form action="fileupload" method="post" enctype="multipart/form-data">');
-        res.write('<input type="file" name="filetoupload"><br>');
-        res.write('<input type="submit">');
-        res.write('</form>');    // res.setHeader('Content-type', 'application/json');
+        // res.write('<form action="fileupload" method="post" enctype="multipart/form-data">');
+        // res.write('<input type="file" name="filetoupload"><br>');
+        // res.write('<input type="submit">');
+        // res.write('</form>');    // res.setHeader('Content-type', 'application/json');
         //res.setHeader('Access-Control-Allow-Origin', "*");
       //  res.writeHead(200);//status code HTTP 200 / Ok
         //let dataObj = {"id":123, "name":"Bob","email":"bob@work.net"};
