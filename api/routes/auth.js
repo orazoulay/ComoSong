@@ -14,7 +14,7 @@ router.post('/register', async (req, res) => {
         userId: req.body.id,
         password: req.body.password,
         name: req.body.name
-    }; // You need to add the file as value here
+    }; // You need to add the file as value here.
     sequalize.users.findOne({
         where: {
             userId: values.userId,
