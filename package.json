@@ -26,6 +26,6 @@
   },
   "homepage": "https://github.com/NirNini/ComoSong#readme",
   "engines": {
-    "node": "12.16.2"
+    "node": "6.11.1"
   }
 }
