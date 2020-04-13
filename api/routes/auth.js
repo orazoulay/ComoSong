@@ -27,12 +27,16 @@ router.post('/register', async (req, res) => {
                     status: 0,
                     message: "אנחנו כבר חברים!"
                 });
+                console.log(res);
+
             } else {
                 sequalize.users.create(values);
                 res.status(200).json({
                     status: 1,
                     message: "נרשמת בהצלחה"
                 });
+                console.log(res);
+
             }
         });
     sequalize.users.close;
@@ -55,13 +59,18 @@ router.post('/login', async (req, res) => {
                 res.status(200).json({
                     status: 1,
                     message: "הרשמה הצליחה",
+                    name: obj.name,
 
                 });
+                console.log(res);
+
             } else {
                 res.status(400).json({
                     status: 0,
                     message: "משתמש לא קיים במערכת",
                 });
+                console.log(res);
+
             }
 
         });
