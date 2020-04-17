@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/textview_selector"
+    android:clickable="true"
+    android:focusable="true"
+
+    android:gravity="right"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        android:gravity="right"
+        android:text="USER"
+        android:textDirection="rtl"
+        android:textSize="20dp" />
+
+</RelativeLayout>

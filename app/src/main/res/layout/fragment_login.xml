@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -9,37 +10,69 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:textSize="30dp"
-        android:textStyle="bold"
         android:layout_marginTop="120dp"
-        android:text="ברוך הבא ל ComoSong" />
+        android:text="ברוך הבא ל ComoSong"
+        android:textColor="@color/colorPrimary"
+        android:textSize="30dp"
+        android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/etUserName"
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tiUserName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="80dp"
-        android:layout_marginEnd="80dp" />
-
-    <EditText
-        android:id="@+id/etPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/etUserName"
-        android:layout_centerInParent="true"
+        android:layout_below="@id/tvTitle"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="30dp"
-        android:layout_alignStart="@id/etUserName"
-        android:layout_alignEnd="@id/etUserName" />
+        android:layout_marginEnd="40dp"
+        android:textColorHint="@color/colorPrimary"
+        app:hintTextColor="@color/colorPrimary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etUserName"
+            android:layout_width="match_parent"
+            android:imeOptions="actionNext"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:theme="@style/MyHintStyle" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tiPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tiUserName"
+        android:layout_alignStart="@id/tiUserName"
+        android:layout_alignEnd="@id/tiUserName"
+        android:layout_marginTop="30dp"
+        android:textColorHint="@color/colorPrimary"
+        app:hintTextColor="@color/colorPrimary"
+        android:layout_alignLeft="@id/tiUserName"
+        android:layout_alignRight="@id/tiUserName">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:backgroundTint="@color/colorPrimary"
+            android:theme="@style/MyHintStyle" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
         android:id="@+id/btnContinue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/etPassword"
+        android:layout_below="@id/tiPassword"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:text="התחבר" />
+        android:background="@drawable/rectangle_button_regular"
+        android:text="התחבר"
+        android:textColor="@color/colorPrimary" />
 
 
 </RelativeLayout>

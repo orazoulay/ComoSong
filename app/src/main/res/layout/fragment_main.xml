@@ -1,66 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout
-
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageButton
-        android:id="@+id/ibPlayer"
+    <TextView
+        android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
-        android:background="@drawable/circle"
-         />
-
-    <Chronometer
-        android:id="@+id/chronometer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ibPlayer"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:textSize="30sp" />
-
-    <VideoView
-        android:id="@+id/videoView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/llButtons"
-        android:layout_below="@id/chronometer"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp" />
+        android:text="ברוך הבא"
+        android:textColor="@color/colorPrimary"
+        android:textSize="40dp"
+        android:textStyle="bold" />
 
-    <LinearLayout
-        android:id="@+id/llButtons"
+    <Button
+        android:id="@+id/btnStartProcess"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal">
+        android:layout_below="@id/tvTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="70dp"
+        android:background="@drawable/rectangle_button_regular"
+        android:text="התחל תהליך חדש"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20dp" />
 
-        <Button
-            android:id="@+id/openCamBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp"
-            android:layout_weight="0.5"
-            android:background="@drawable/rectangle_button_regular"
-            android:text="התחלת וידאו" />
+    <TextView
+        android:id="@+id/tvProcessesStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnStartProcess"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="70dp"
+        android:gravity="center"
+        android:text="שירים פתוחים"
+        android:textSize="20dp" />
 
-        <Button
-            android:id="@+id/btnSendToServer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp"
-            android:layout_weight="0.5"
-            android:background="@drawable/rectangle_button_regular"
-            android:text="שלח" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvOpenProcesses"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvProcessesStatus"
+        android:layout_margin="30dp" />
 
-    </LinearLayout>
 </RelativeLayout>

@@ -1,156 +1,63 @@
 package com.sapps.songprocess.fragments;
 
-
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.SystemClock;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Chronometer;
-import android.widget.ImageButton;
-import android.widget.Toast;
-import android.widget.VideoView;
+import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.sapps.songprocess.R;
-import com.sapps.songprocess.activities.MainActivity;
 
-public class MainFragment extends Fragment {
-    private Chronometer chronometer;
-    private MediaPlayer mediaPlayer;
-    private long pauseOffset;
-    private boolean running;
-    private VideoView videoView;
-    private Button openCamBtn;
-    private Button btnSendToServer;
-    private ImageButton ibPlayer;
+import org.w3c.dom.Text;
 
-    private MainActivity.OnVideoReturnListener onVideoReturnListener = new MainActivity.OnVideoReturnListener() {
-        @Override
-        public void onVideoReturn(Uri videoUri) {
-            videoView.setVideoURI(videoUri);
-            videoView.start();
-            stopSong();
-        }
+public class MainFragment extends ComoSongFragment {
 
-        ;
-    };
+private Button btnStartProcess;
+private RecyclerView rvOpenProcesses;
+private TextView tvTitle;
 
-    @Nullable
+private OnStartProcessClickListener onStartProcessClickListener;
+
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
-        initSong();
-        initViews(view);
-        initListeners();
-
-        chronometer.setFormat("Time: %s");
-        chronometer.setBase(SystemClock.elapsedRealtime());
-
-
-        return view;
+    protected int initLayout() {
+        return R.layout.fragment_main;
     }
 
-
-    private void initViews(View view) {
-        openCamBtn = view.findViewById(R.id.openCamBtn);
-        videoView = view.findViewById(R.id.videoView);
-        ibPlayer = view.findViewById(R.id.ibPlayer);
-        chronometer = view.findViewById(R.id.chronometer);
-        btnSendToServer = view.findViewById(R.id.btnSendToServer);
+    @Override
+    protected void initViews(View view) {
+        super.initViews(view);
+        btnStartProcess = view.findViewById(R.id.btnStartProcess);
+        rvOpenProcesses = view.findViewById(R.id.rvOpenProcesses);
+        tvTitle = view.findViewById(R.id.tvTitle);
     }
 
-    private void initListeners() {
-        btnSendToServer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainActivity)getActivity()).sendPostRequest();
-            }
-        });
-        ibPlayer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startChronometer(v);
-//                ((MainActivity)getActivity()).sendPostRequest();
+    @Override
+    protected void initTexts() {
+        super.initTexts();
+        tvTitle.setText("ברוך הבא "+app().getUserAccountManager().getUser().getName());
+    }
 
-            }
-        });
-        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+    @Override
+    protected void initListeners() {
+        super.initListeners();
+
+        btnStartProcess.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onChronometerTick(Chronometer chronometer) {
-                if ((SystemClock.elapsedRealtime() - chronometer.getBase()) >= mediaPlayer.getDuration()) {
-                    chronometer.setBase(SystemClock.elapsedRealtime());
-                    Toast.makeText(getActivity(), "Bing!", Toast.LENGTH_SHORT).show();
+            public void onClick(View v) {
+                if(onStartProcessClickListener!=null){
+                    onStartProcessClickListener.onStartProcess();
                 }
-            }
-        });
-
-        openCamBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playSong();
-                ((MainActivity) getActivity()).dispatchTakeVideoIntent(onVideoReturnListener, getContext());
-
 
             }
         });
-
     }
 
-
-    public void startChronometer(View v) {
-        if (!running) {
-            chronometer.setBase(mediaPlayer.getCurrentPosition() - pauseOffset);
-            chronometer.start();
-            playSong();
-            running = true;
-        } else {
-            pauseChronometer(v);
-        }
+    public void setOnStartProcessClickListener(OnStartProcessClickListener onStartProcessClickListener) {
+        this.onStartProcessClickListener = onStartProcessClickListener;
     }
 
-    public void pauseChronometer(View v) {
-        if (running) {
-            chronometer.stop();
-            pauseOffset = SystemClock.elapsedRealtime() - chronometer.getBase();
-            running = false;
-            pauseSong();
-        }
+    public interface OnStartProcessClickListener{
+        void onStartProcess();
     }
-
-    public void resetChronometer(View v) {
-        chronometer.setBase(SystemClock.elapsedRealtime());
-        pauseOffset = 0;
-    }
-
-
-    private void initSong() {
-        mediaPlayer = MediaPlayer.create(getActivity(), R.raw.angels);
-        mediaPlayer.setLooping(true); // Set looping
-        mediaPlayer.setVolume(100, 100);
-    }
-
-    private void playSong() {
-        mediaPlayer.start();
-    }
-
-    private void pauseSong() {
-        mediaPlayer.pause();
-    }
-
-    private void stopSong() {
-        mediaPlayer.stop();
-    }
-
-    private void seekTo(int value) {
-        mediaPlayer.seekTo(value);
-    }
-
-
 }

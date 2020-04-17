@@ -9,17 +9,26 @@
 
     <RelativeLayout
         android:id="@+id/rlActionBar"
-        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:visibility="gone">
 
     </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/flContainer"
-        android:layout_below="@id/rlActionBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/rlActionBar"
+        android:visibility="visible" />
 
-
+    <com.sapps.songprocess.activities.VideoScreen
+        android:id="@+id/videoView"
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#00000000"
+        />
 </RelativeLayout>
