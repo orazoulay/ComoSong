@@ -1,0 +1,4 @@
+get all users
+mongoose.model('users').find(function(err,users){
+    res.send(users);
+    console.log("Response");

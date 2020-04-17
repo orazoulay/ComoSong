@@ -1,12 +1,8 @@
 {
-  "name": "comosong",
+  "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^8.5.1"
-  },
+  "main": "server.js",
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -35,7 +31,9 @@
     "mongoose": "^5.9.7",
     "morgan": "^1.9.1",
     "mysql2": "^2.1.0",
+    "nodemon": "^2.0.3",
+    "rtl-detect": "^1.0.2",
     "sequelize": "^5.21.6",
-    "homepage": "https://github.com/NirNini/ComoSong#readme"
+    "string-direction": "^0.1.2"
   }
 }

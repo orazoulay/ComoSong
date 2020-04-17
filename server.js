@@ -3,27 +3,42 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const sequalize = require('./db/sequalize');
 var ffmpeg = require('fluent-ffmpeg');
+const mongoose = require('mongoose');
 const formidable = require('formidable');
 const fs = require('fs');
 
 const port = process.env.PORT || 3001;
 
 
-function addFileToDb(filePath){
-   const values = {
+//Connect to DB
+mongoose.connect(process.env.DB_CONNECT,
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    },
+    () => console.log('connected to db')
+);
+mongoose.Promise = global.Promise;
+
+
+
+function addFileToDb(filePath) {
+    const values = {
         userId: '1',
         password: '1234',
         name: 'or',
         file: filePath
     }; // You need to add the file as value here
-    sequalize.users.findOne({ where: {
-        userId: values.userId,
-        } })
-        .then(function(obj) {
+    sequalize.users.findOne({
+        where: {
+            userId: values.userId,
+        }
+    })
+        .then(function (obj) {
             // update
-            if(obj)
+            if (obj)
                 obj.update(values);
-            else 
+            else
                 sequalize.users.create(values);
         });
     sequalize.users.close;
@@ -52,7 +67,7 @@ app.use((req, res, next) => {
         const form = new formidable.IncomingForm();
         form.parse(req, function (err, fields, files) {
             const oldpath = files.filename.path;
-            const newpath = './resources/' + files.filename.name+".mp4";
+            const newpath = './resources/' + files.filename.name + ".mp4";
             fs.rename(oldpath, newpath, function (err) {
                 if (err) throw err;
                 res.write('File uploaded and moved!');
@@ -67,11 +82,11 @@ app.use((req, res, next) => {
         // res.write('<input type="submit">');
         // res.write('</form>');    // res.setHeader('Content-type', 'application/json');
         //res.setHeader('Access-Control-Allow-Origin', "*");
-      //  res.writeHead(200);//status code HTTP 200 / Ok
+        //  res.writeHead(200);//status code HTTP 200 / Ok
         //let dataObj = {"id":123, "name":"Bob","email":"bob@work.net"};
         //let data = JSON.stringify(dataObj);
-       res.end();
-   }
+        res.end();
+    }
 });
 
 app.listen(port, () => console.log(`Listen to port ${port}`));
