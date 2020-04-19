@@ -3,16 +3,24 @@ package com.sapps.songprocess.fragments;
 
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
-import android.widget.Toast;
 import android.widget.VideoView;
+
+import androidx.annotation.Nullable;
 
 import com.sapps.songprocess.R;
 import com.sapps.songprocess.activities.MainActivity;
+import com.sapps.songprocess.data.OpenSong;
+import com.sapps.songprocess.requests.AuthenticationRequests;
+
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 public class SongFragment extends ComoSongFragment {
     private Chronometer chronometer;
@@ -24,19 +32,34 @@ public class SongFragment extends ComoSongFragment {
     private Button btnSendToServer;
     private ImageButton ibPlayer;
     long timeWhenStopped = 0;
+    private OpenSong openSong;
+    private long songStarttime;
+    private long songEndtime;
+    private Uri vidUri;
+    private OnContinueProcess onContinueProcess;
 
 
     private MainActivity.OnVideoReturnListener onVideoReturnListener = new MainActivity.OnVideoReturnListener() {
         @Override
         public void onVideoReturn(Uri videoUri) {
-            resetChronometer();
+//            resetChronometer();
             videoView.setVideoURI(videoUri);
+            vidUri = videoUri;
             videoView.setVisibility(View.VISIBLE);
             videoView.start();
         }
 
-        ;
+
     };
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    public SongFragment(OpenSong song) {
+        this.openSong = song;
+    }
 
     @Override
     protected int initLayout() {
@@ -51,7 +74,7 @@ public class SongFragment extends ComoSongFragment {
         btnSendToServer = view.findViewById(R.id.btnSendToServer);
         chronometer.setFormat("זמן: %s");
         chronometer.setBase(SystemClock.elapsedRealtime());
-        initSong();
+//        initSong();
 
     }
 
@@ -59,7 +82,9 @@ public class SongFragment extends ComoSongFragment {
         btnSendToServer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).sendPostRequest();
+                if (onContinueProcess != null) {
+                    onContinueProcess.onSendToServer(vidUri);
+                }
             }
         });
         ibPlayer.setOnClickListener(new View.OnClickListener() {
@@ -69,23 +94,14 @@ public class SongFragment extends ComoSongFragment {
 
             }
         });
-        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-            @Override
-            public void onChronometerTick(Chronometer chronometer) {
-                if ((SystemClock.elapsedRealtime() - chronometer.getBase()) >= mediaPlayer.getDuration()) {
-                    chronometer.setBase(SystemClock.elapsedRealtime());
-                    Toast.makeText(getActivity(), "Bing!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
         openCamBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playSong();
-                ((MainActivity) getActivity()).dispatchTakeVideoIntent(onVideoReturnListener, getContext());
 
-
+                if (onContinueProcess != null) {
+                    onContinueProcess.onContinue(onVideoReturnListener);
+                }
             }
         });
 
@@ -93,53 +109,84 @@ public class SongFragment extends ComoSongFragment {
 
 
     public void startChronometer(View v) {
-        if (!running) {
-            chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
-            chronometer.start();
-            playSong();
-            running = true;
-        } else {
-            pauseChronometer(v);
-        }
-    }
-
-    public void pauseChronometer(View v) {
-        if (running) {
-            timeWhenStopped = chronometer.getBase() - SystemClock.elapsedRealtime();
-            chronometer.stop();
-            running = false;
-            pauseSong();
-        }
-    }
-
-    public void resetChronometer() {
-       stopSong();
         chronometer.setBase(SystemClock.elapsedRealtime());
-         timeWhenStopped = 0;
+        chronometer.start();
+        playSong();
+
     }
 
 
     private void initSong() {
-        mediaPlayer = MediaPlayer.create(getActivity(), R.raw.angels);
+        mediaPlayer = MediaPlayer.create(getActivity(), R.raw.shevet);
         mediaPlayer.setLooping(true); // Set looping
         mediaPlayer.setVolume(100, 100);
+        this.songStarttime = preperTimes(app().getUserAccountManager().getUser().getSongSubtitle().get(0).getStart());
+        this.songEndtime = preperTimes(app().getUserAccountManager().getUser().getSongSubtitle().get(0).getEnd());
+        seekTo(songStarttime);
+
+    }
+
+    private long preperTimes(String sTime) {
+        String[] parts = sTime.split(Pattern.quote(":"));
+        long min = TimeUnit.MINUTES.toMillis(Long.parseLong(parts[0]));
+        long sec = TimeUnit.SECONDS.toMillis(Long.parseLong(parts[1]));
+        if (parts.length > 2) {
+            long mili = Long.parseLong(parts[2]);
+            sec += mili;
+        }
+
+        long time = min + sec;
+
+        return time;
+
     }
 
     private void playSong() {
+        initSong();
         mediaPlayer.start();
+        ibPlayer.setEnabled(false);
+        CountDownTimer timer = new CountDownTimer(songEndtime - songStarttime, 1000) {
+
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                // Nothing to do
+            }
+
+            @Override
+            public void onFinish() {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                    chronometer.stop();
+                    ibPlayer.setEnabled(true);
+
+                }
+            }
+        };
+        timer.start();
     }
 
-    private void pauseSong() {
-        mediaPlayer.pause();
-    }
 
     private void stopSong() {
         mediaPlayer.stop();
     }
 
-    private void seekTo(int value) {
-        mediaPlayer.seekTo(value);
+    private void seekTo(long value) {
+        if (value > (long) Integer.MAX_VALUE) {
+            // x is too big to convert, throw an exception or something useful
+        } else {
+            value = ((int) value);
+        }
+        mediaPlayer.seekTo((int) value);
     }
 
+    public void setOnContinueProcess(OnContinueProcess onContinueProcess) {
+        this.onContinueProcess = onContinueProcess;
+    }
 
+    public interface OnContinueProcess {
+        void onContinue(MainActivity.OnVideoReturnListener onVideoReturnListener);
+
+        void onSendToServer(Uri uri);
+    }
 }

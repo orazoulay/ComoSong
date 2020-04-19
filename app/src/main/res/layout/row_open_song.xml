@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:background="@drawable/textview_selector"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="right"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvSong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:text="USER"
+        android:textDirection="rtl"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/tvSongSender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvSong"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="שולח השיר - "
+        android:textDirection="rtl"
+        android:textSize="13dp"
+        android:textStyle="bold" />
+
+    <View
+        android:id="@+id/vDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/textViewColor" />
+
+</LinearLayout>

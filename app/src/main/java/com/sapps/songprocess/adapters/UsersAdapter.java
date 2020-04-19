@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sapps.songprocess.R;
 import com.sapps.songprocess.data.User;
+import com.sapps.songprocess.fragments.ChooseSongProperties;
 
 import java.util.List;
 
@@ -49,12 +50,12 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
             tvUser = itemView.findViewById(R.id.tvUser);
+            tvUser.setOnClickListener(this);
         }
-
-
 
         @Override
         public void onClick(View v) {
+            if (mClickListener != null) mClickListener.onItemClick(v, getAdapterPosition(),getItemViewType());
 
         }
     }
@@ -66,7 +67,12 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
 
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
-        void onItemClick(View view, int position);
+        void onItemClick(View view, int position , int type);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return ChooseSongProperties.USER;
     }
 }
 

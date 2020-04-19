@@ -2,5 +2,7 @@
     <string name="app_name">Song Process</string>
     <string name="apiUrl">10.100.102.6</string>
     <string name="video_button">Video Record Button</string>
+    <drawable name="clr_normal">#FFFFFF</drawable>
+    <drawable name="clr_pressed">@color/colorPrimary</drawable>
     <string name="camera_button">Camera Capture Button</string>
 </resources>

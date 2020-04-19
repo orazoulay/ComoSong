@@ -2,50 +2,67 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
->
+    android:layout_height="match_parent">
+
     <TextureView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/textureView"
-        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+
+
+    <TextView
+        android:id="@+id/tvTranslation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:visibility="visible"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:textSize="22dp"
+        android:text=""
+        android:gravity="center"
+        />
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/videoOnlineImageButton"
-        android:contentDescription="@string/video_button"
-        android:src="@mipmap/btn_video_online"
-        android:layout_marginBottom="36dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="49dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="49dp" />
-
-    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="49dp"
+        android:layout_marginRight="49dp"
+        android:layout_marginBottom="36dp"
+        android:contentDescription="@string/video_button"
+        android:src="@mipmap/btn_video_online" />
+
+    <ImageButton
         android:id="@+id/cameraImageButton2"
-        android:contentDescription="@string/camera_button"
-        android:src="@mipmap/btn_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignTop="@+id/videoOnlineImageButton"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="57dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="57dp" />
+        android:layout_marginStart="57dp"
+        android:layout_marginLeft="57dp"
+        android:contentDescription="@string/camera_button"
+        android:src="@mipmap/btn_camera"
+        android:visibility="gone" />
 
     <Chronometer
+        android:id="@+id/chronometer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/chronometer"
-        android:visibility="invisible"
-        android:textColor="#ff0000"
-        android:textSize="25dp"
         android:layout_above="@+id/videoOnlineImageButton"
         android:layout_alignStart="@+id/videoOnlineImageButton"
-        android:layout_alignLeft="@+id/videoOnlineImageButton" />
+        android:layout_alignLeft="@+id/videoOnlineImageButton"
+        android:textColor="#ff0000"
+        android:textSize="25dp"
+        android:visibility="invisible" />
 
 </RelativeLayout>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
 
@@ -10,12 +10,22 @@
         android:id="@+id/tvChooseSong"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimary"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
         android:text="בחר שיר"
+        android:textColor="@color/colorPrimary"
         android:textSize="28dp" />
 
+    <TextView
+        android:id="@+id/tvSongChoosen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvChooseSong"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="3dp"
+        android:text="sadasdasd"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSongs"
@@ -24,29 +34,43 @@
         android:layout_above="@+id/tvChooseFriends"
         android:layout_below="@id/tvChooseSong"
         android:layout_margin="40dp"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rectangle_button_regular"
+        android:textDirection="rtl"
+        tools:listitem="@layout/row_song" />
 
     <TextView
         android:id="@+id/tvChooseFriends"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:textColor="@color/colorPrimary"
         android:layout_centerHorizontal="true"
         android:text="בחר חברים"
+        android:textColor="@color/colorPrimary"
         android:textSize="28dp" />
 
+    <TextView
+        android:id="@+id/tvFriendsCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvChooseFriends"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="3dp"
+        android:text="sadasdasd"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFriends"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tvChooseFriends"
-        tools:listitem="@layout/row_user"
-        android:textDirection="rtl"
         android:layout_above="@+id/btnContinue"
+        android:layout_below="@id/tvChooseFriends"
         android:layout_margin="40dp"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rectangle_button_regular"
+        android:textDirection="rtl"
+        tools:listitem="@layout/row_user" />
 
     <Button
         android:id="@+id/btnContinue"

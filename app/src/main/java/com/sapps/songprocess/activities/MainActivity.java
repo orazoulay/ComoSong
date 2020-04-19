@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setCameraActivity() {
+    public void setCameraActivity() {
         Intent intent = new Intent(this,CameraActivity.class);
        startActivity(intent);
 

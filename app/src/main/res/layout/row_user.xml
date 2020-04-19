@@ -2,10 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/textview_selector"
-    android:clickable="true"
-    android:focusable="true"
-
+    android:layout_margin="5dp"
+    android:clickable="false"
+    android:focusable="false"
     android:gravity="right"
     android:orientation="vertical">
 
@@ -13,12 +12,14 @@
         android:id="@+id/tvUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="10dp"
+        android:background="@drawable/textview_selector"
+        android:clickable="true"
+        android:focusable="true"
         android:gravity="right"
+        android:paddingRight="10dp"
         android:text="USER"
+        android:textColor="@drawable/textview_text_selector"
         android:textDirection="rtl"
-        android:textSize="20dp" />
+        android:textSize="18dp" />
 
 </RelativeLayout>

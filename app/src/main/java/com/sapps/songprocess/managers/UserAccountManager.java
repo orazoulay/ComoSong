@@ -1,10 +1,15 @@
 package com.sapps.songprocess.managers;
 
+import android.net.Uri;
+
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.sapps.songprocess.Application;
 import com.sapps.songprocess.R;
+import com.sapps.songprocess.activities.MainActivity;
+import com.sapps.songprocess.data.OpenSong;
 import com.sapps.songprocess.data.User;
 import com.sapps.songprocess.fragments.ChooseSongProperties;
 import com.sapps.songprocess.fragments.LoginFragment;
@@ -14,8 +19,10 @@ import com.sapps.songprocess.requests.AuthenticationRequests;
 
 import java.util.List;
 
+
 public class UserAccountManager extends Manager {
 
+    public MainActivity.OnVideoReturnListener videoReturnListener;
     User user;
 
     private Application app() {
@@ -58,18 +65,39 @@ public class UserAccountManager extends Manager {
 
     }
 
-    public void pushSongFragment() {
-        Fragment fragment = new SongFragment();
+    public void pushSongFragment(OpenSong song) {
+        SongFragment fragment = new SongFragment(song);
+        fragment.setOnContinueProcess(new SongFragment.OnContinueProcess() {
+            @Override
+            public void onContinue(MainActivity.OnVideoReturnListener onVideoReturnListener) {
+                videoReturnListener = onVideoReturnListener;
+//                popFragments();
+                app().getCurrectActivity().setCameraActivity();
+            }
+
+            @Override
+            public void onSendToServer(Uri uri) {
+                AuthenticationRequests.sendUploadVideoRequest(app(),app().getUserAccountManager().getUser().getUid(),uri);
+
+            }
+        });
         pushFragment(fragment);
 
+    }
+
+    private void popFragments() {
+        FragmentManager fm = app().getCurrectActivity().getSupportFragmentManager();
+        for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+            fm.popBackStack();
+        }
     }
 
     public void pushChooseSongPropertiesFragment(List<User> users) {
         ChooseSongProperties fragment = new ChooseSongProperties(users);
         fragment.setOnChooseSongListener(new ChooseSongProperties.OnChooseSongListener() {
             @Override
-            public void onContinue() {
-
+            public void onContinue(List<User> users, String song) {
+                AuthenticationRequests.sendUpdateUserRequest(app(), users, song);
             }
         });
 
@@ -85,6 +113,11 @@ public class UserAccountManager extends Manager {
             public void onStartProcess() {
 //                pushChooseSongPropertiesFragment();
                 AuthenticationRequests.sendGetUsersRequest(app());
+            }
+
+            @Override
+            public void onStartExistProject(OpenSong song) {
+                pushSongFragment(song);
             }
         });
 

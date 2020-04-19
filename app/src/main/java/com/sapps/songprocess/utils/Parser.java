@@ -3,6 +3,7 @@ package com.sapps.songprocess.utils;
 
 import android.database.Cursor;
 
+import com.sapps.songprocess.data.Line;
 import com.sapps.songprocess.data.User;
 
 import org.json.JSONArray;
@@ -196,7 +197,20 @@ public class Parser {
         return list;
 
     }
+    public static List <Line> createList(JSONObject jsonObject, Line defualtValue) {
+        List<Line> list = new ArrayList<>();
+        Iterator<String> iterator = jsonObject.keys();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            Line value = Line.createUserFromResponse(Parser.jsonParse(jsonObject, key, new JSONObject()));
+            if (value != defualtValue) {
+                list.add(value);
+            }
+        }
 
+        return list;
+
+    }
 
     public static HashMap<String, String> getHashMapFromJson(HashMap<String, String> hashMap, JSONObject jsonObject) {
 
