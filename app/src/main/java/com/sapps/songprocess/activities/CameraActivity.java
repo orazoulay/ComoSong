@@ -46,9 +46,11 @@ import androidx.core.content.ContextCompat;
 
 import com.sapps.songprocess.Application;
 import com.sapps.songprocess.R;
+import com.sapps.songprocess.data.Line;
 import com.sapps.songprocess.data.OpenSong;
 import com.sapps.songprocess.data.Song;
 
+import java.io.Console;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,6 +62,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -154,6 +159,7 @@ public class CameraActivity extends AppCompatActivity {
                     mBackgroundHandler.post(new ImageSaver(reader.acquireLatestImage()));
                 }
             };
+
     private class ImageSaver implements Runnable {
 
         private final Image mImage;
@@ -181,7 +187,7 @@ public class CameraActivity extends AppCompatActivity {
                 mediaStoreUpdateIntent.setData(Uri.fromFile(new File(mImageFileName)));
                 sendBroadcast(mediaStoreUpdateIntent);
 
-                if(fileOutputStream != null) {
+                if (fileOutputStream != null) {
                     try {
                         fileOutputStream.close();
                     } catch (IOException e) {
@@ -192,8 +198,10 @@ public class CameraActivity extends AppCompatActivity {
 
         }
     }
+
     private MediaRecorder mMediaRecorder;
     private Chronometer mChronometer;
+
     private int mTotalRotation;
     private CameraCaptureSession mPreviewCaptureSession;
     private CameraCaptureSession.CaptureCallback mPreviewCaptureCallback = new
@@ -207,7 +215,7 @@ public class CameraActivity extends AppCompatActivity {
                         case STATE_WAIT_LOCK:
                             mCaptureState = STATE_PREVIEW;
                             Integer afState = captureResult.get(CaptureResult.CONTROL_AF_STATE);
-                            if(afState == CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED ||
+                            if (afState == CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED ||
                                     afState == CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED) {
                                 Toast.makeText(getApplicationContext(), "AF Locked!", Toast.LENGTH_SHORT).show();
                                 startStillCaptureRequest();
@@ -264,6 +272,7 @@ public class CameraActivity extends AppCompatActivity {
     private String mImageFileName;
 
     private static SparseIntArray ORIENTATIONS = new SparseIntArray();
+
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 0);
         ORIENTATIONS.append(Surface.ROTATION_90, 90);
@@ -275,8 +284,8 @@ public class CameraActivity extends AppCompatActivity {
 
         @Override
         public int compare(Size lhs, Size rhs) {
-            return Long.signum( (long)(lhs.getWidth() * lhs.getHeight()) -
-                    (long)(rhs.getWidth() * rhs.getHeight()));
+            return Long.signum((long) (lhs.getWidth() * lhs.getHeight()) -
+                    (long) (rhs.getWidth() * rhs.getHeight()));
         }
     }
 
@@ -379,19 +388,19 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == REQUEST_CAMERA_PERMISSION_RESULT) {
-            if(grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == REQUEST_CAMERA_PERMISSION_RESULT) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(getApplicationContext(),
                         "Application will not run without camera services", Toast.LENGTH_SHORT).show();
             }
-            if(grantResults[1] != PackageManager.PERMISSION_GRANTED) {
+            if (grantResults[1] != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(getApplicationContext(),
                         "Application will not have audio on record", Toast.LENGTH_SHORT).show();
             }
         }
-        if(requestCode == REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION_RESULT) {
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if(mIsRecording || mIsTimelapse) {
+        if (requestCode == REQUEST_WRITE_EXTERNAL_STORAGE_PERMISSION_RESULT) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (mIsRecording || mIsTimelapse) {
                     mIsRecording = true;
                     mRecordImageButton.setImageResource(R.mipmap.btn_video_busy);
                 }
@@ -417,7 +426,7 @@ public class CameraActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocas) {
         super.onWindowFocusChanged(hasFocas);
         View decorView = getWindow().getDecorView();
-        if(hasFocas) {
+        if (hasFocas) {
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -430,10 +439,10 @@ public class CameraActivity extends AppCompatActivity {
     private void setupCamera(int width, int height) {
         CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         try {
-            for(String cameraId : cameraManager.getCameraIdList()){
+            for (String cameraId : cameraManager.getCameraIdList()) {
                 CameraCharacteristics cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId);
-                if(cameraCharacteristics.get(CameraCharacteristics.LENS_FACING) ==
-                        CameraCharacteristics.LENS_FACING_FRONT){
+                if (cameraCharacteristics.get(CameraCharacteristics.LENS_FACING) ==
+                        CameraCharacteristics.LENS_FACING_FRONT) {
                     continue;
                 }
                 StreamConfigurationMap map = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
@@ -442,7 +451,7 @@ public class CameraActivity extends AppCompatActivity {
                 boolean swapRotation = mTotalRotation == 90 || mTotalRotation == 270;
                 int rotatedWidth = width;
                 int rotatedHeight = height;
-                if(swapRotation) {
+                if (swapRotation) {
                     rotatedWidth = height;
                     rotatedHeight = width;
                 }
@@ -462,17 +471,17 @@ public class CameraActivity extends AppCompatActivity {
     private void connectCamera() {
         CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         try {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) ==
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) ==
                         PackageManager.PERMISSION_GRANTED) {
                     cameraManager.openCamera(mCameraId, mCameraDeviceStateCallback, mBackgroundHandler);
                 } else {
-                    if(shouldShowRequestPermissionRationale(android.Manifest.permission.CAMERA)) {
+                    if (shouldShowRequestPermissionRationale(android.Manifest.permission.CAMERA)) {
                         Toast.makeText(this,
                                 "Video app required access to camera", Toast.LENGTH_SHORT).show();
                     }
-                    requestPermissions(new String[] {android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO
-                    , Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION_RESULT);
+                    requestPermissions(new String[]{android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO
+                            , Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION_RESULT);
                 }
 
             } else {
@@ -487,7 +496,7 @@ public class CameraActivity extends AppCompatActivity {
 
         try {
 //            if(mIsRecording) {
-                setupMediaRecorder();
+            setupMediaRecorder();
 //            } else if(mIsTimelapse) {
 //                setupTimelapse();
 //            }
@@ -593,11 +602,11 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     private void closeCamera() {
-        if(mCameraDevice != null) {
+        if (mCameraDevice != null) {
             mCameraDevice.close();
             mCameraDevice = null;
         }
-        if(mMediaRecorder != null) {
+        if (mMediaRecorder != null) {
             mMediaRecorder.release();
             mMediaRecorder = null;
         }
@@ -628,8 +637,8 @@ public class CameraActivity extends AppCompatActivity {
 
     private static Size chooseOptimalSize(Size[] choices, int width, int height) {
         List<Size> bigEnough = new ArrayList<Size>();
-        for(Size option : choices) {
-            if(option.getHeight() == option.getWidth() * height / width &&
+        for (Size option : choices) {
+            if (option.getHeight() == option.getWidth() * height / width &&
                     option.getWidth() >= width && option.getHeight() >= height) {
                 bigEnough.add(option);
             }
@@ -660,7 +669,7 @@ public class CameraActivity extends AppCompatActivity {
     private void createImageFolder() {
         File imageFile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         mImageFolder = new File(imageFile, "camera2VideoImage");
-        if(!mImageFolder.exists()) {
+        if (!mImageFolder.exists()) {
             mImageFolder.mkdirs();
         }
     }
@@ -753,8 +762,8 @@ public class CameraActivity extends AppCompatActivity {
         mediaPlayer = MediaPlayer.create(this, R.raw.shevet);
         mediaPlayer.setLooping(true); // Set looping
         mediaPlayer.setVolume(100, 100);
-        this.songStarttime = preperTimes(app().getUserAccountManager().getUser().getSongSubtitle().get(0).getStart());
-        this.songEndtime = preperTimes(app().getUserAccountManager().getUser().getSongSubtitle().get(0).getEnd());
+//        this.songStarttime = preperTimes(app().getUserAccountManager().getUser().getSongSubtitleLines().get(0).getStart());
+//        this.songEndtime = preperTimes(app().getUserAccountManager().getUser().getSongSubtitleLines().get(0).getEnd());
         seekTo(songStarttime);
 
     }
@@ -788,17 +797,21 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     private void playSong() {
-        tvTranslation.setText(app().getUserAccountManager().getUser().getSongSubtitle().get(0).getWords());
+        final List<Line> lines = app().getUserAccountManager().getUser().getSongSubtitleLines();
+        this.songStarttime = preperTimes(lines.get(0).getStart());
+        this.songEndtime = preperTimes(lines.get(lines.size() - 1).getEnd());
+        tvTranslation.setText(app().getUserAccountManager().getUser().getSongSubtitleLines().get(0).getWords());
         tvTranslation.setVisibility(View.VISIBLE);
         initSong();
         mediaPlayer.start();
         mRecordImageButton.setEnabled(false);
-        CountDownTimer timer = new CountDownTimer(songEndtime-songStarttime, 1000) {
-
-
+        for (Line line : lines) {
+            givenUsingTimer_whenSchedulingTaskOnce_thenCorrect(preperTimes(line.getStart()), line.getWords());
+        }
+        final CountDownTimer timer = new CountDownTimer(songEndtime - songStarttime, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                // Nothing to do
+
             }
 
             @Override
@@ -814,6 +827,20 @@ public class CameraActivity extends AppCompatActivity {
             }
         };
         timer.start();
+
+
     }
 
+    public void givenUsingTimer_whenSchedulingTaskOnce_thenCorrect(long time, final String word) {
+        TimerTask task = new TimerTask() {
+            public void run() {
+                tvTranslation.setText(word);
+            }
+        };
+        Timer timer = new Timer("Timer");
+
+        long delay = time;
+        timer.schedule(task, delay);
+    }
 }
+

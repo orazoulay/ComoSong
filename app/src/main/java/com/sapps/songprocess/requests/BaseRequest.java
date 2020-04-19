@@ -122,7 +122,13 @@ public class BaseRequest extends Request<JSONObject> {
                 generalData.setUsers(users);
                 app().getUserAccountManager().pushChooseSongPropertiesFragment(users);
                 break;
-
+            case "updateUser":
+                JSONObject updateUserJson = Parser.jsonParse(response, "data", new JSONObject());
+                User userUpdate = User.createUserFromResponse(updateUserJson);
+                app().getUserAccountManager().setUser(userUpdate);
+                app().getCurrectActivity().getSupportFragmentManager().popBackStack();
+                Toast.makeText(app().getCurrectActivity(), "Update User Request Successfully", Toast.LENGTH_SHORT).show();
+                break;
 
         }
 

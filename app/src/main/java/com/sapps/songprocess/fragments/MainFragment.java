@@ -18,7 +18,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainFragment extends ComoSongFragment implements OpenSongsAdapter.ItemClickListener{
+public class MainFragment extends ComoSongFragment implements OpenSongsAdapter.ItemClickListener {
     public static final int OPENSONG = 3;
     private Button btnStartProcess;
     private Button btnContinue;
@@ -65,7 +65,7 @@ public class MainFragment extends ComoSongFragment implements OpenSongsAdapter.I
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onStartProcessClickListener != null && openSong!=null) {
+                if (onStartProcessClickListener != null && openSong != null) {
                     onStartProcessClickListener.onStartExistProject(openSong);
                 }
             }
@@ -75,12 +75,17 @@ public class MainFragment extends ComoSongFragment implements OpenSongsAdapter.I
     @Override
     protected void initAdapters() {
         super.initAdapters();
+        openSongs.clear();
+
+        if (app().getUserAccountManager().getUser().getSendSongId().equals(app().getUserAccountManager().getUser().getUid())) {
+            app().getUserAccountManager().getUser().setSendSongName(app().getUserAccountManager().getUser().getName());
+        }
         if (!app().getUserAccountManager().getUser().getSendSongName().isEmpty()
                 && !app().getUserAccountManager().getUser().getOpenSong().isEmpty()) {
             openSongs.add(new OpenSong(app().getUserAccountManager().getUser().getOpenSong()
                     , app().getUserAccountManager().getUser().getSendSongName()));
 
-            OpenSongsAdapter openSongsAdapter = new OpenSongsAdapter(app(),openSongs);
+            OpenSongsAdapter openSongsAdapter = new OpenSongsAdapter(app(), openSongs);
             rvOpenProcesses.setLayoutManager(new LinearLayoutManager(app()));
             openSongsAdapter.setClickListener(this);
             rvOpenProcesses.setAdapter(openSongsAdapter);

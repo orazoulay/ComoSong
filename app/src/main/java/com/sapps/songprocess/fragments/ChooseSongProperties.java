@@ -59,6 +59,8 @@ public class ChooseSongProperties extends ComoSongFragment implements UsersAdapt
 
     }
 
+
+
     @Override
     protected void initTexts() {
         super.initTexts();

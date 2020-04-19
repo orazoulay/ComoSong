@@ -16,9 +16,11 @@ import androidx.annotation.Nullable;
 
 import com.sapps.songprocess.R;
 import com.sapps.songprocess.activities.MainActivity;
+import com.sapps.songprocess.data.Line;
 import com.sapps.songprocess.data.OpenSong;
 import com.sapps.songprocess.requests.AuthenticationRequests;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -120,8 +122,9 @@ public class SongFragment extends ComoSongFragment {
         mediaPlayer = MediaPlayer.create(getActivity(), R.raw.shevet);
         mediaPlayer.setLooping(true); // Set looping
         mediaPlayer.setVolume(100, 100);
-        this.songStarttime = preperTimes(app().getUserAccountManager().getUser().getSongSubtitle().get(0).getStart());
-        this.songEndtime = preperTimes(app().getUserAccountManager().getUser().getSongSubtitle().get(0).getEnd());
+        List <Line> lines = app().getUserAccountManager().getUser().getSongSubtitleLines();
+        this.songStarttime = preperTimes(lines.get(0).getStart());
+        this.songEndtime = preperTimes(lines.get(lines.size()-1).getEnd());
         seekTo(songStarttime);
 
     }

@@ -129,6 +129,9 @@ public class UserAccountManager extends Manager {
         transaction.setCustomAnimations(android.R.anim.slide_in_left,
                 android.R.anim.slide_out_right);
         transaction.replace(R.id.flContainer, fragment);
+        if(!fragment.equals(MainFragment.class)){
+            transaction.addToBackStack(fragment.getTag());
+        }
         transaction.commit();
     }
 

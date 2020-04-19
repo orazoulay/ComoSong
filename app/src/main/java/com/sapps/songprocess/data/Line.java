@@ -15,11 +15,11 @@ public class Line {
 
     public static Line createUserFromResponse(JSONObject response) {
         Line line = new Line();
-        JSONObject lineJson = Parser.jsonParse(response, "lines", new JSONObject());
-        line.setNumber(Parser.jsonParseString(lineJson, "number", ""));
-        line.setStart(Parser.jsonParseString(lineJson, "start", ""));
-        line.setEnd(Parser.jsonParseString(lineJson, "end", ""));
-        line.setWords(Parser.jsonParseString(lineJson, "words", ""));
+//        JSONObject lineJson = Parser.jsonParse(response, "lines", new JSONObject());
+        line.setNumber(Parser.jsonParseString(response, "number", ""));
+        line.setStart(Parser.jsonParseString(response, "start", ""));
+        line.setEnd(Parser.jsonParseString(response, "end", ""));
+        line.setWords(Parser.jsonParseString(response, "words", ""));
 
         return line;
 

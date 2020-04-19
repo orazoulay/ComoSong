@@ -19,7 +19,7 @@ public class User {
     private String sendSongId;
     private String sendSongName;
     private List<String> usersId;
-    private List<Line> songSubtitle;
+    private List<Line> songSubtitleLines;
 
 
     public User() {
@@ -39,7 +39,8 @@ public class User {
         user.setSendSongId(Parser.jsonParseString(userJson, "sendSongId", ""));
         user.setSendSongName(Parser.jsonParseString(userJson, "sendSongName", ""));
         JSONObject subtitleJson = Parser.jsonParse(userJson, "songSubtitle", new JSONObject());
-        user.setSongSubtitle(Parser.createList(subtitleJson, new Line()));
+        JSONObject linesJson = Parser.jsonParse(subtitleJson, "lines", new JSONObject());
+        user.setSongSubtitleLines(Parser.createList(linesJson, new Line()));
 
         return user;
     }
@@ -125,11 +126,11 @@ public class User {
         this.sendSongName = sendSongName;
     }
 
-    public List<Line> getSongSubtitle() {
-        return songSubtitle;
+    public List<Line> getSongSubtitleLines() {
+        return songSubtitleLines;
     }
 
-    public void setSongSubtitle(List<Line> songSubtitle) {
-        this.songSubtitle = songSubtitle;
+    public void setSongSubtitleLines(List<Line> songSubtitleLines) {
+        this.songSubtitleLines = songSubtitleLines;
     }
 }
