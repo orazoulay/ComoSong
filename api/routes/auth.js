@@ -16,27 +16,6 @@ router.post('/register', async (req, res) => {
     await create(regUser, res);
 
 });
-async function update(id, userParam) {
-    const user = await User.findById(id);
-
-    // validate
-    if (!user) throw 'User not found';
-    if (user.username !== userParam.username && await User.findOne({ username: userParam.username })) {
-        res.status(400).json({
-            status: 0,
-            massage: ""
-        });    }
-
-    // hash password if it was entered
-    if (userParam.password) {
-        userParam.hash = bcrypt.hashSync(userParam.password, 10);
-    }
-
-    // copy userParam properties to user
-    Object.assign(user, userParam);
-
-    await user.save();
-}
 
 
 async function create(userParam, res) {
@@ -70,13 +49,30 @@ router.post('/login', async (req, res) => {
     authUser.username = req.body.username;
     User.findOne({username: req.body.username, password: req.body.password}).then(user => {
         if (user) {
-            return res.status(200).json({
-                request: 'login',
-                status: 1,
-                data: {
-                    user: user
-                }
-            });
+            ///if user have song waiting on the list
+            if(user.openSong!==null){
+                User.findOne({uid: user.sendSongId}).then(senderUser => {
+                   if(senderUser) {
+                       user.sendSongName = senderUser._doc.name
+                       return res.status(200).json({
+                           request: 'login',
+                           status: 1,
+                           data: {
+                               user: user
+                           }
+                       });
+                   }else{
+                       return res.status(200).json({
+                           request: 'login',
+                           status: 1,
+                           data: {
+                               user: user
+                           }
+                       });
+                   }
+                });
+            }
+
         } else {
             return res.status(400).json({
                 request: 'login',
@@ -89,5 +85,44 @@ router.post('/login', async (req, res) => {
 
 });
 
+async function update(param, newDataQuery, res) {
+
+    User.findOneAndUpdate(param, newDataQuery, {upsert: true}, function (err, doc) {
+        if (err) return res.send(500, {error: err});
+        // return res.status(200).json({
+        //     request: 'updateUser',
+        //     status: 1,
+        //     user: doc._doc
+        // });
+    });
+}
+
+router.post('/updateUser', async (req, res) => {
+    const usersId = req.body.usersId.split('|');
+    const jsons=  [{songSubtitle: {lines: {number: "1",start: "0:00",end: "00:04:500",words:"שבעים שנה במכונית"}}},
+        {songSubtitle: {lines: {number: "2",start: "00:05",end: "00:08:00",words:"אני נוסע ומביט"}}},
+        {songSubtitle: {lines: {number: "3",start: "00:08",end: "00:11:500",words:"על מה ומה נהיה"}}}];
+
+    // Remove the last slot in the array which is an empty slot
+    usersId.pop();
+    for (var i = 0; i < usersId.length; i++){
+        //send the song name and the sender id to the other id's that in the songProcess
+
+        await update({uid: usersId[i]}, {openSong: req.body.openSong,sendSongId: req.body.uid}, res);
+        await update({uid: usersId[i]}, jsons[i], res);
+        await sleep(1000);
+
+        // await update({uid: usersId[i]},jsons[i] , res);
+    }
+
+    await update({username: req.body.username}, {usersId: usersId}, res);
+});
+
+
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
 
 module.exports = router;
