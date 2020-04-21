@@ -13,12 +13,9 @@ var ffmpeg = require('fluent-ffmpeg');
 async function setFiles() {
     await ffmpeg('./resources/1.mp4')
         .input('./resources/2.mp4')
-        .input('./resources/3.mp4')
-        .input('./resources/4.mp4')
-        .input('./resources/5.mp4')
         .on('error', function (err) {
             console.log('An error occurred: ' + err.message);
-            reject('An error occurred: ' + err.message);
+            // reject('An error occurred: ' + err.message);
         })
         .mergeToFile('./resources/final.mp4')
         .on('end', function () {
@@ -33,14 +30,14 @@ router.post('/getMergeSongs', async (req, res) => {
         if (err) {
             return console.log('Unable to scan directory: ' + err);
         }
-        if (files.length === 5) {
-            setFiles()
-            //listing all files using forEach
-            // files.forEach(function (file) {
-            //     // Do whatever you want to do with the file
-            //     console.log(file);
-            // });
-        }
+            setFiles();
+            return res.status(200).json({
+                request: 'getMergeSongs',
+                status: 1,
+                massage: "מתחיל לחבר קבצים"
+            });
+
+
     });
 });
 
@@ -96,7 +93,16 @@ async function updateDB(filePath, res, userParam) {
 
 router.post('/getSongProcess', async (req, res) => {
 
-   await update({uid: req.body.uid}, {songSubtitle: {lines: {number: "1",start: "0:00",end: "00:04:500",words:"שבעים שנה במכונית"}}},res)
+    await update({uid: req.body.uid}, {
+        songSubtitle: {
+            lines: {
+                number: "1",
+                start: "0:00",
+                end: "00:04:500",
+                words: "שבעים שנה במכונית"
+            }
+        }
+    }, res)
 
 });
 
