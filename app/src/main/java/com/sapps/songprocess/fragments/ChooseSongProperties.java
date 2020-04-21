@@ -87,8 +87,7 @@ public class ChooseSongProperties extends ComoSongFragment implements UsersAdapt
     protected void initAdapters() {
         super.initAdapters();
         songs.add("שבט אחים ואחיות - עידן ריייכל");
-        songs.add("שבט דודים ודודות - עידן ריייכל");
-        songs.add("שבט הורים והורות - עידן ריייכל");
+        songs.add("Imagine - John Lennon");
         SongsAdapter songsAdapter = new SongsAdapter(app(), songs);
         users.remove(app().getUserAccountManager().getUser());
         UsersAdapter usersAdapter = new UsersAdapter(app(), users);

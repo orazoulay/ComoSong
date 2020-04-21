@@ -27,6 +27,7 @@ public class AuthenticationRequests {
     private static final String uploadVideoMethod = "uploadSong";
     private static final String getUsersMethod = "getUsers";
     private static final String getUpdateUserMethod = "updateUser";
+    private static final String getSongMerge = "getMergeSongs";
     private static RequestQueue rQueue;
     public static boolean isUploadingData = false;
 
@@ -42,6 +43,15 @@ public class AuthenticationRequests {
         hashMap.put("username", userName);
         hashMap.put("password", password);
         BaseRequest baseRequest = new BaseRequest(loginMethod, hashMap);
+        rQueue.add(baseRequest);
+    }
+
+    public static void sendSongMerge(Context context) {
+        isUploadingData = false;
+        Toast.makeText(app().getCurrectActivity(), "מתחיל לחבר קבצים", Toast.LENGTH_SHORT).show();
+        rQueue = Volley.newRequestQueue(context);
+        HashMap<String, String> hashMap = new HashMap<>();
+        BaseRequest baseRequest = new BaseRequest(getSongMerge, hashMap);
         rQueue.add(baseRequest);
     }
 

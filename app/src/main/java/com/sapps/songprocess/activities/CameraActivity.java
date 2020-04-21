@@ -759,7 +759,7 @@ public class CameraActivity extends AppCompatActivity {
 
 
     private void initSong() {
-        mediaPlayer = MediaPlayer.create(this, R.raw.shevet);
+        mediaPlayer = MediaPlayer.create(this, R.raw.imagine);
         mediaPlayer.setLooping(true); // Set looping
         mediaPlayer.setVolume(100, 100);
 //        this.songStarttime = preperTimes(app().getUserAccountManager().getUser().getSongSubtitleLines().get(0).getStart());
@@ -798,7 +798,7 @@ public class CameraActivity extends AppCompatActivity {
 
     private void playSong() {
         final List<Line> lines = app().getUserAccountManager().getUser().getSongSubtitleLines();
-        this.songStarttime = preperTimes(lines.get(0).getStart());
+        this.songStarttime = preperTimes(lines.get(0).getStart())-500;
         this.songEndtime = preperTimes(lines.get(lines.size() - 1).getEnd());
         tvTranslation.setText(app().getUserAccountManager().getUser().getSongSubtitleLines().get(0).getWords());
         tvTranslation.setVisibility(View.VISIBLE);
@@ -806,7 +806,7 @@ public class CameraActivity extends AppCompatActivity {
         mediaPlayer.start();
         mRecordImageButton.setEnabled(false);
         for (Line line : lines) {
-            givenUsingTimer_whenSchedulingTaskOnce_thenCorrect(preperTimes(line.getStart()), line.getWords());
+            givenUsingTimer_whenSchedulingTaskOnce_thenCorrect(preperTimes(line.getStart())-preperTimes(lines.get(0).getStart()), line.getWords());
         }
         final CountDownTimer timer = new CountDownTimer(songEndtime - songStarttime, 1000) {
             @Override

@@ -80,6 +80,12 @@ public class UserAccountManager extends Manager {
                 AuthenticationRequests.sendUploadVideoRequest(app(),app().getUserAccountManager().getUser().getUid(),uri);
 
             }
+
+            @Override
+            public void onMergeSongs() {
+                AuthenticationRequests.sendSongMerge(app());
+
+            }
         });
         pushFragment(fragment);
 

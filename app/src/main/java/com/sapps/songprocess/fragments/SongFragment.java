@@ -31,6 +31,7 @@ public class SongFragment extends ComoSongFragment {
     private boolean running;
     private VideoView videoView;
     private Button openCamBtn;
+    private Button btnMergeSong;
     private Button btnSendToServer;
     private ImageButton ibPlayer;
     long timeWhenStopped = 0;
@@ -72,10 +73,14 @@ public class SongFragment extends ComoSongFragment {
         openCamBtn = view.findViewById(R.id.openCamBtn);
         videoView = view.findViewById(R.id.videoView);
         ibPlayer = view.findViewById(R.id.ibPlayer);
+        btnMergeSong = view.findViewById(R.id.btnMergeSong);
         chronometer = view.findViewById(R.id.chronometer);
         btnSendToServer = view.findViewById(R.id.btnSendToServer);
         chronometer.setFormat("זמן: %s");
         chronometer.setBase(SystemClock.elapsedRealtime());
+        if(app().getUserAccountManager().getUser().getUid().equals(app().getUserAccountManager().getUser().getSendSongId())){
+            btnMergeSong.setVisibility(View.VISIBLE);
+        }
 //        initSong();
 
     }
@@ -102,11 +107,24 @@ public class SongFragment extends ComoSongFragment {
             public void onClick(View v) {
 
                 if (onContinueProcess != null) {
+//                    mediaPlayer.stop();
+                    if(mediaPlayer!=null && mediaPlayer.isPlaying()){
+                        mediaPlayer.stop();
+                    }
                     onContinueProcess.onContinue(onVideoReturnListener);
                 }
             }
         });
 
+        btnMergeSong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(onContinueProcess!=null){
+                    onContinueProcess.onMergeSongs();
+                }
+
+            }
+        });
     }
 
 
@@ -119,11 +137,11 @@ public class SongFragment extends ComoSongFragment {
 
 
     private void initSong() {
-        mediaPlayer = MediaPlayer.create(getActivity(), R.raw.shevet);
+        mediaPlayer = MediaPlayer.create(getActivity(), R.raw.imagine);
         mediaPlayer.setLooping(true); // Set looping
         mediaPlayer.setVolume(100, 100);
         List <Line> lines = app().getUserAccountManager().getUser().getSongSubtitleLines();
-        this.songStarttime = preperTimes(lines.get(0).getStart());
+        this.songStarttime = preperTimes(lines.get(0).getStart())-500;
         this.songEndtime = preperTimes(lines.get(lines.size()-1).getEnd());
         seekTo(songStarttime);
 
@@ -191,5 +209,9 @@ public class SongFragment extends ComoSongFragment {
         void onContinue(MainActivity.OnVideoReturnListener onVideoReturnListener);
 
         void onSendToServer(Uri uri);
+
+        void onMergeSongs();
     }
+
+    public interface OnAnswerReturnListenrt{}
 }
