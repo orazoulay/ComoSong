@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const formidable = require('formidable');
 const fs = require('fs');
 const path = require('path');
+const ffprobeInstaller = require('@ffprobe-installer/ffprobe')
 const directoryPath = path.join('', 'resources');
 var ffmpeg = require('fluent-ffmpeg');
 

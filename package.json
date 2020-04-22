@@ -18,6 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ffprobe-installer/ffprobe": "^1.0.12",
     "@hapi/joi": "^17.0.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
