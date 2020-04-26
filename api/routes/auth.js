@@ -100,7 +100,6 @@ async function update(param, newDataQuery, res) {
 }
 
 router.post('/updateUser', async (req, res) => {
-    var child = require('child_process').spawn('java', ['-jar', '/javaJar/UsersPartition.jar', '/translates/John-Lennon-Imagine.srt 3 00:00:000 01:35:000 /translates/json.txt']);
     const usersId = req.body.usersId.split('|');
     const jsons = [{
         songSubtitle: {

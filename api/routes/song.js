@@ -6,7 +6,6 @@ const bcrypt = require('bcryptjs');
 const formidable = require('formidable');
 const fs = require('fs');
 const path = require('path');
-const ffprobeInstaller = require('@ffprobe-installer/ffprobe')
 const directoryPath = path.join('', 'resources');
 var ffmpeg = require('fluent-ffmpeg');
 
@@ -14,16 +13,18 @@ var ffmpeg = require('fluent-ffmpeg');
 async function setFiles() {
     await ffmpeg('./resources/1.mp4')
         .input('./resources/2.mp4')
-        .on('error', function (err) {
+        .input('./resources/3.mp4')
+            .on('error', function (err) {
             console.log('An error occurred: ' + err.message);
-            // reject('An error occurred: ' + err.message);
+            reject('An error occurred: ' + err.message);
         })
-        .mergeToFile('./resources/final.mp4')
+        .mergeToFile('./resources/final2.mp4')
         .on('end', function () {
             console.log("merged");
             // addFileToDb();
         });
 }
+
 
 router.post('/getMergeSongs', async (req, res) => {
     fs.readdir(directoryPath, function (err, files) {
@@ -31,14 +32,20 @@ router.post('/getMergeSongs', async (req, res) => {
         if (err) {
             return console.log('Unable to scan directory: ' + err);
         }
+        if (files.length > 1) {
             setFiles();
             return res.status(200).json({
                 request: 'getMergeSongs',
                 status: 1,
                 massage: "מתחיל לחבר קבצים"
             });
-
-
+        } else {
+            return res.status(400).json({
+                request: 'getMergeSongs',
+                status: 0,
+                massage: "עדיין לא כולם שלחו את הסרט שלהם"
+            });
+        }
     });
 });
 
