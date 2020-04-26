@@ -21,7 +21,7 @@ async function setFiles() {
         .mergeToFile('./resources/final2.mp4')
         .on('end', function () {
             console.log("merged");
-            // addFileToDb();
+            // addFileToDb();asdasdasjij
         });
 }
 
