@@ -22,7 +22,6 @@ async function setFiles() {
         .on('end', function () {
             console.log("merged");
             // addFileToDb();
-            // shoam agever
         });
 }
 
