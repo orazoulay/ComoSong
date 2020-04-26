@@ -12,9 +12,7 @@ const schema = new Schema({
     usersId: {type: Array},
     sendSongId: {type: String},
     sendSongName: {type: String},
-    songSubtitle: {
-        type: Array,
-        lines: {
+    songSubtitle: {lines: {
             type: Array,
             number: {type: String},
             start: {type: String},

@@ -50,26 +50,26 @@ router.post('/login', async (req, res) => {
     User.findOne({username: req.body.username, password: req.body.password}).then(user => {
         if (user) {
             ///if user have song waiting on the list
-            if(user.openSong!==null){
+            if (user.openSong !== null) {
                 User.findOne({uid: user.sendSongId}).then(senderUser => {
-                   if(senderUser) {
-                       user.sendSongName = senderUser._doc.name
-                       return res.status(200).json({
-                           request: 'login',
-                           status: 1,
-                           data: {
-                               user: user
-                           }
-                       });
-                   }else{
-                       return res.status(200).json({
-                           request: 'login',
-                           status: 1,
-                           data: {
-                               user: user
-                           }
-                       });
-                   }
+                    if (senderUser) {
+                        user.sendSongName = senderUser._doc.name
+                        return res.status(200).json({
+                            request: 'login',
+                            status: 1,
+                            data: {
+                                user: user
+                            }
+                        });
+                    } else {
+                        return res.status(200).json({
+                            request: 'login',
+                            status: 1,
+                            data: {
+                                user: user
+                            }
+                        });
+                    }
                 });
             }
 
@@ -95,20 +95,116 @@ async function update(param, newDataQuery, res) {
         //     user: doc._doc
         // });
     });
+
+
 }
 
 router.post('/updateUser', async (req, res) => {
+    var child = require('child_process').spawn('java', ['-jar', '/javaJar/UsersPartition.jar', '/translates/John-Lennon-Imagine.srt 3 00:00:000 01:35:000 /translates/json.txt']);
     const usersId = req.body.usersId.split('|');
-    const jsons=  [{songSubtitle: {lines: {number: "1",start: "0:00",end: "00:04:500",words:"שבעים שנה במכונית"}}},
-        {songSubtitle: {lines: {number: "2",start: "00:05",end: "00:08:00",words:"אני נוסע ומביט"}}},
-        {songSubtitle: {lines: {number: "3",start: "00:08",end: "00:11:500",words:"על מה ומה נהיה"}}}];
+    const jsons = [{
+        songSubtitle: {
+            "lines": [
+                {
+                    "number": 1,
+                    "start": "00:12:201",
+                    "words": "Imagine there′s no heaven",
+                    "end": "00:17:900"
+                },
+                {
+                    "number": 2,
+                    "start": "00:18:714",
+                    "words": "It is easy if you try",
+                    "end": "00:24:613"
+                },
+                {
+                    "number": 3,
+                    "start": "00:25:213",
+                    "words": "No hell below us",
+                    "end": "00:31:012"
+                },
+                {
+                    "number": 4,
+                    "start": "00:32:404",
+                    "words": "Above us only sky",
+                    "end": "00:37:503"
+                }
+            ]
+        }
+    },
+        {
+            songSubtitle: {
+                "lines": [
+                    {
+                        "number": 5,
+                        "start": "00:37:503",
+                        "words": "Imagine all the people",
+                        "end": "00:44:102"
+                    },
+                    {
+                        "number": 6,
+                        "start": "00:43:916",
+                        "words": "Living for today... Aha ah",
+                        "end": "00:53:465"
+                    },
+                    {
+                        "number": 7,
+                        "start": "00:51:013",
+                        "words": "Imagine there′s no countries",
+                        "end": "00:57:212"
+                    },
+                    {
+                        "number": 8,
+                        "start": "00:57:516",
+                        "words": "It isn′t hard to do",
+                        "end": "01:03:515"
+                    }
+                ]
+            }
+        },
+        {
+            songSubtitle: {
+                "lines": [
+                    {
+                        "number": 9,
+                        "start": "01:03:515",
+                        "words": "Nothing to kill or die for",
+                        "end": "01:10:104"
+                    },
+                    {
+                        "number": 10,
+                        "start": "01:10:500",
+                        "words": "And no religion‚ too",
+                        "end": "01:16:399"
+                    },
+                    {
+                        "number": 11,
+                        "start": "01:17:017",
+                        "words": "Imagine all the people",
+                        "end": "01:23:116"
+                    },
+                    {
+                        "number": 12,
+                        "start": "01:23:010",
+                        "words": "Living life in peace... You",
+                        "end": "01:32:409"
+                    },
+                    {
+                        "number": 13,
+                        "start": "01:30:315",
+                        "words": "You may say I am a dreamer",
+                        "end": "01:36:314"
+                    }
+                ]
+            }
+        }];
 
     // Remove the last slot in the array which is an empty slot
     usersId.pop();
-    for (var i = 0; i < usersId.length; i++){
+    for (var i = 0; i < usersId.length; i++) {
         //send the song name and the sender id to the other id's that in the songProcess
 
-        await update({uid: usersId[i]}, {openSong: req.body.openSong,sendSongId: req.body.uid}, res);
+        await update({uid: usersId[i]}, {openSong: req.body.openSong, sendSongId: req.body.uid}, res);
         await update({uid: usersId[i]}, jsons[i], res);
         await sleep(1000);
 
@@ -116,6 +212,18 @@ router.post('/updateUser', async (req, res) => {
     }
 
     await update({username: req.body.username}, {usersId: usersId}, res);
+
+    await User.findOne({username: req.body.username}).then(senderUser => {
+        if (senderUser) {
+            return res.status(200).json({
+                request: 'updateUser',
+                status: 1,
+                data: {
+                    user: senderUser
+                }
+            });
+        }
+    });
 });
 
 
